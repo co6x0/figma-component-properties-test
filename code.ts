@@ -14,7 +14,7 @@ const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__, { themeColors: true });
-figma.ui.resize(320, 480);
+figma.ui.resize(400, 480);
 
 // Calls to "parent.postMessage" from within the HTML page will trigger this
 // callback. The callback will be passed the "pluginMessage" property of the
@@ -87,23 +87,21 @@ figma.ui.onmessage = (msg: { NodeID: string }) => {
             return `'${child.name}'`;
           }
         );
-        return `${props.name}: ${otherInstanceNames?.join("|")}`;
+        return `${props.name}: ${otherInstanceNames?.join(" | ")}`;
       }
     });
 
     const ReactComponent = `
-      type Props = {
-        ${ReactComponentProps[0]}
-        ${ReactComponentProps[1]}
-        ${ReactComponentProps[2]}
-      }
-      export const ${node.name}: React.FC<Props> = () => {
-        <>
-        </>
-      }
+type Props = {
+  ${ReactComponentProps.join("\n  ")}
+}
+export const ${node.name}: React.FC<Props> = () => {
+  return <></>
+}
     `;
 
     figma.ui.postMessage({
+      message: "success",
       name: node.name,
       componentProperties: componentProperties,
       variantProperties: node.variantProperties,

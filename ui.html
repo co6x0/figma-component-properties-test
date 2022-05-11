@@ -5,8 +5,12 @@
     background-color: var(--figma-color-bg);
     color: var(--figma-color-text);
   }
-  h1 {
+  .plugin-title h1 {
     font-size: 1rem;
+  }
+  .plugin-title p {
+    font-size: 0.8rem;
+    color: var(--figma-color-text-onselected-secondary);
   }
   input {
     font-size: 0.8rem;
@@ -24,7 +28,7 @@
     border: solid 1px var(--figma-color-border-onbrand);
     border-radius: 4px;
   }
-  #codeDisplay {
+  #result {
     background-color: var(--figma-color-bg-inverse);
     color: var(--figma-color-text-success);
     width: calc(100% - 24px);
@@ -32,26 +36,28 @@
     border-radius: 4px;
     padding: 12px;
   }
-  #currentText {
-    white-space: pre-line;
+  #currentMessage {
+    color: var(--figma-color-text-oninverse);
+  }
+  #currentComponent {
+    white-space: pre;
   }
 </style>
 
-<h1>Component Properties to React Component</h1>
+<div class="plugin-title">
+  <h1>Minimum React Component Template Generator</h1>
+  <p>with Figma Component Properties</p>
+</div>
 <p>
   <input id="keyInput" placeholder="enter component id…" required />
 </p>
 <button id="inspect">Inspect</button>
 <hr />
-<div id="codeDisplay">
-  <!-- <p id="currentText">
-    {"definitions":{"2:1":{"name":"label","type":"TEXT","defaultValue":"label"},"2:0":{"name":"hasNotification","type":"BOOLEAN","defaultValue":"true"}}}
-  </p> -->
-</div>
+<div id="result"></div>
 
 <script>
   const keyInput = document.getElementById("keyInput");
-  const codeDisplay = document.getElementById("codeDisplay");
+  const resultDisplay = document.getElementById("result");
 
   document.getElementById("inspect").onclick = () => {
     const NodeID = keyInput.value;
@@ -59,16 +65,26 @@
   };
 
   onmessage = (event) => {
-    const beforeText = document.getElementById("currentText");
-    if (beforeText) beforeText.remove();
-    const textNode = document.createElement("p");
-    textNode.setAttribute("id", "currentText");
+    const beforeMessage = document.getElementById("currentMessage");
+    const beforeComponent = document.getElementById("currentComponent");
+    if (beforeMessage) beforeText.remove();
+    if (beforeComponent) beforeComponent.remove();
 
-    const eventData = event.data.pluginMessage;
-    const eventDataString = JSON.stringify(eventData);
+    const messageNode = document.createElement("p");
+    const componentNode = document.createElement("pre");
+    messageNode.setAttribute("id", "currentMessage");
+    componentNode.setAttribute("id", "currentComponent");
 
-    const text = document.createTextNode(eventDataString);
-    textNode.appendChild(text);
-    codeDisplay.appendChild(textNode);
+    const messageText = document.createTextNode(
+      event.data.pluginMessage.message
+    );
+    const componentText = document.createTextNode(
+      event.data.pluginMessage.reactComponent
+    );
+
+    messageNode.appendChild(messageText);
+    componentNode.appendChild(componentText);
+    resultDisplay.appendChild(messageNode);
+    resultDisplay.appendChild(componentNode);
   };
 </script>
