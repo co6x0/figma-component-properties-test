@@ -80,7 +80,6 @@ figma.ui.onmessage = (msg: { NodeID: string }) => {
 
       const instanceId = props.defaultValue;
       const instanceNode = figma.getNodeById(instanceId);
-      console.log(instanceNode?.type);
       if (instanceNode?.type === "COMPONENT") {
         const otherInstanceNames = instanceNode.parent?.children.map(
           (child) => {

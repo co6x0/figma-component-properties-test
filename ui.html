@@ -67,7 +67,7 @@
   onmessage = (event) => {
     const beforeMessage = document.getElementById("currentMessage");
     const beforeComponent = document.getElementById("currentComponent");
-    if (beforeMessage) beforeText.remove();
+    if (beforeMessage) beforeMessage.remove();
     if (beforeComponent) beforeComponent.remove();
 
     const messageNode = document.createElement("p");
