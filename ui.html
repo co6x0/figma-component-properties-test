@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<style>
+  body {
+    font-family: Inter, sans-serif;
+    background-color: var(--figma-color-bg);
+    color: var(--figma-color-text);
+  }
+  h1 {
+    font-size: 1rem;
+  }
+  input {
+    font-size: 0.8rem;
+    width: 100%;
+    padding: 12px 8px;
+    border: solid 1px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  button {
+    font-size: 0.8rem;
+    width: 100%;
+    padding: 12px 8px;
+    background-color: var(--figma-color-bg-brand);
+    color: var(--figma-color-text-onbrand);
+    border: solid 1px var(--figma-color-border-onbrand);
+    border-radius: 4px;
+  }
+  #codeDisplay {
+    background-color: var(--figma-color-bg-inverse);
+    color: var(--figma-color-text-success);
+    width: calc(100% - 24px);
+    overflow: scroll;
+    border-radius: 4px;
+    padding: 12px;
+  }
+  #currentText {
+    white-space: pre-line;
+  }
+</style>
+
+<h1>Component Properties to React Component</h1>
+<p>
+  <input id="keyInput" placeholder="enter component id…" required />
+</p>
+<button id="inspect">Inspect</button>
+<hr />
+<div id="codeDisplay">
+  <!-- <p id="currentText">
+    {"definitions":{"2:1":{"name":"label","type":"TEXT","defaultValue":"label"},"2:0":{"name":"hasNotification","type":"BOOLEAN","defaultValue":"true"}}}
+  </p> -->
+</div>
+
+<script>
+  const keyInput = document.getElementById("keyInput");
+  const codeDisplay = document.getElementById("codeDisplay");
+
+  document.getElementById("inspect").onclick = () => {
+    const NodeID = keyInput.value;
+    parent.postMessage({ pluginMessage: { type: "fromUI", NodeID } }, "*");
+  };
+
+  onmessage = (event) => {
+    const beforeText = document.getElementById("currentText");
+    if (beforeText) beforeText.remove();
+    const textNode = document.createElement("p");
+    textNode.setAttribute("id", "currentText");
+
+    const eventData = event.data.pluginMessage;
+    const eventDataString = JSON.stringify(eventData);
+
+    const text = document.createTextNode(eventDataString);
+    textNode.appendChild(text);
+    codeDisplay.appendChild(textNode);
+  };
+</script>
